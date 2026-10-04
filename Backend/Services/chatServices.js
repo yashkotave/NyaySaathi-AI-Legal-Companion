@@ -7,7 +7,8 @@ const { Pinecone } = require("@pinecone-database/pinecone");
 
 const embeddings = new GoogleGenerativeAIEmbeddings({
   apiKey: process.env.GEN_AI_API,
-  model: "text-embedding-004",
+  model: "gemini-embedding-2",
+  outputDimensionality: 768,
 });
 
 const pinecone = new Pinecone();
@@ -16,25 +17,26 @@ let History = [];
 // -------------------- Rewriting the User Query --------------------
 async function transformQuery() {
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: History,
-      config: {
-        systemInstruction: `
+   const response = await ai.models.generateContent({
+  model: "gemini-flash-lite-latest",
+  contents: History,
+  config: {
+    systemInstruction: `
 You are an expert in legal language and question clarification.  
-Your task: Rewrite the "Follow Up User Question" from the conversation history into a **clear, standalone legal question** that:
+Your task: Rewrite the "Follow Up User Question" from the conversation history into a clear, standalone legal question that:
 - Includes all necessary details from the history.
 - Removes ambiguity or slang.
 - Stands on its own without previous context.
 Only return the rewritten question. No extra text or commentary.
-        `,
-      },
-    });
+    `,
+  },
+});;
 
     return response.text.trim();
   } catch (err) {
-    console.error("Error in transformQuery:", err);
-  }
+  console.error("Error in transformQuery:", err);
+  throw err;
+}
 }
 
 // -------------------- Main Bot Response --------------------
@@ -43,9 +45,13 @@ async function getBotResponse(messages, question) {
 
    History = JSON.parse(JSON.stringify(messages));
 
-  const newQuery = await transformQuery(question);
+ const newQuery = await transformQuery(question);
 
-  const queryVector = await embeddings.embedQuery(newQuery);
+if (!newQuery) {
+  throw new Error("Query transformation failed");
+}
+
+const queryVector = await embeddings.embedQuery(newQuery);
   const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX_NAME);
 
   const searchResults = await pineconeIndex.query({
@@ -65,7 +71,7 @@ async function getBotResponse(messages, question) {
   });
 
   const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
+   model: "gemini-flash-lite-latest",
     contents: History,
     config: {
       systemInstruction: `
@@ -107,7 +113,7 @@ async function getSummary(messages) {
   if (!messages) throw new Error("Invalid messages array");
 
   const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
+    model: "gemini-flash-lite-latest",
     contents: [
       ...messages,
       {
