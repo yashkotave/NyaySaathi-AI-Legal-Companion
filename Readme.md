@@ -75,21 +75,6 @@ Before running the project locally, make sure you have:
 - A Pinecone account and index
 - A Google Generative AI API key
 
-## Environment Variables
-
-Create a `.env` file inside the `Backend` directory with the following variables:
-
-```env
-PORT=8080
-FRONTEND_URL=http://localhost:5173
-DB_CONNECT=mongodb://127.0.0.1:27017/nyaysaathi
-JWT_SECRET=your_jwt_secret
-GEN_AI_API=your_google_generative_ai_key
-PINECONE_API_KEY=your_pinecone_api_key
-PINECONE_ENVIRONMENT=your_pinecone_environment
-PINECONE_INDEX_NAME=your_pinecone_index_name
-```
-
 ## Running the Project
 
 ### 1) Install backend dependencies
