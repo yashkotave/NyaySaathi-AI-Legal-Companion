@@ -1,47 +1,171 @@
-# NyaySaathi – Your AI Legal Companion
+# NyaySaathi
 
-NyaySaathi is an **AI-powered legal assistance platform** built using **Retrieval-Augmented Generation (RAG)** to provide users with instant, accurate, and reliable legal advice. It combines verified legal knowledge with conversational AI to make legal help more accessible and affordable for everyone in India.
+NyaySaathi is an AI-powered legal assistance platform designed to help users ask legal questions and receive helpful, context-aware answers in a simple and secure chat experience. The application combines a modern React frontend, a Node.js/Express backend, MongoDB for user data, and a RAG-based AI pipeline using Pinecone and Google Generative AI for document-grounded legal responses.
 
----
+## Overview
 
-## 🚀 Features
+The platform is built to make legal information more accessible to everyday users in India by blending conversational AI with trusted legal document retrieval. Instead of relying only on a generic chatbot, the system retrieves relevant legal content, grounds the answer in that context, and then generates a response that is more useful and reliable.
 
-- **AI-Powered Legal Advice** – Get instant answers to legal queries via a chatbot.
-- **RAG-based Pipeline** – Combines document retrieval from trusted sources with generative AI for accurate responses.
-- **Context-Aware Conversations** – Maintains chat history for better, multi-turn dialogue.
-- **Full-Stack MERN Application** – Smooth integration of frontend, backend, and AI services.
-- **Secure and Scalable** – Ensures privacy of user queries while handling multiple sessions.
+## Key Features
 
----
+- User authentication with registration, login, and protected routes
+- Secure JWT-based session handling
+- AI-powered legal chat with chat history support
+- Retrieval-Augmented Generation (RAG) approach for grounded responses
+- Legal document indexing and semantic retrieval using Pinecone
+- Modern frontend experience with React + Vite + Tailwind CSS
+- Express backend with validation, middleware, and MongoDB integration
 
-## 🏗️ Architecture
+## Tech Stack
 
-**Workflow:**
-1. User asks a legal question in the chat interface (**React.js** frontend).
-2. The backend (**Node.js + Express.js**) processes the request.
-3. Relevant legal documents are retrieved from the database (**MongoDB** or vector DB).
-4. Retrieved documents are fed into the AI model to generate a context-aware response.
-5. The response is sent back to the frontend and displayed instantly.
+### Frontend
+- React
+- Vite
+- Tailwind CSS
+- React Router
+- Axios
+- Framer Motion
 
----
-
-## 🛠 Tech Stack
-
-**Frontend:**
-- React.js
-- Tailwind CSS (optional styling)
-
-**Backend:**
+### Backend
 - Node.js
 - Express.js
+- MongoDB with Mongoose
+- JWT authentication
+- Cookie-based auth
+- Express Validator
+- CORS
 
-**Database:**
-- MongoDB && Pinecone
+### AI and Search
+- Google Generative AI
+- LangChain
+- Pinecone vector database
+- Retrieval-Augmented Generation (RAG)
 
-**AI:**
-- Retrieval-Augmented Generation (RAG) pipeline integrating LLM + document retriever
+## Project Structure
 
-**Hosting:**
-- Frontend: Vercel
-- Backend: DigitalOcean
+```bash
+NyaySaathi/
+├── Backend/
+│   ├── controllers/
+│   ├── middlewares/
+│   ├── models/
+│   ├── routers/
+│   ├── Services/
+│   ├── app.js
+│   ├── db.js
+│   ├── .env
+│   ├── package.json
+│   └── package-lock.json
+├── Frontend/
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   ├── vite.config.js
+│   └── index.html
+├── Readme.md
+└── .gitignore
+```
 
+## Prerequisites
+
+Before running the project locally, make sure you have:
+
+- Node.js 18+ installed
+- MongoDB running locally or a remote MongoDB instance
+- A Pinecone account and index
+- A Google Generative AI API key
+
+## Environment Variables
+
+Create a `.env` file inside the `Backend` directory with the following variables:
+
+```env
+PORT=8080
+FRONTEND_URL=http://localhost:5173
+DB_CONNECT=mongodb://127.0.0.1:27017/nyaysaathi
+JWT_SECRET=your_jwt_secret
+GEN_AI_API=your_google_generative_ai_key
+PINECONE_API_KEY=your_pinecone_api_key
+PINECONE_ENVIRONMENT=your_pinecone_environment
+PINECONE_INDEX_NAME=your_pinecone_index_name
+```
+
+## Running the Project
+
+### 1) Install backend dependencies
+
+```bash
+cd Backend
+npm install
+```
+
+### 2) Start the backend server
+
+```bash
+node app.js
+```
+
+Or, for development with auto-reload:
+
+```bash
+npx nodemon app.js
+```
+
+Backend server will run at:
+
+```bash
+http://localhost:8080
+```
+
+### 3) Install frontend dependencies
+
+```bash
+cd Frontend
+npm install
+```
+
+### 4) Start the frontend app
+
+```bash
+npm run dev
+```
+
+Frontend will run at:
+
+```bash
+http://localhost:5173
+```
+
+## API Endpoints
+
+### User Routes
+- `POST /users/register` - Register a new user
+- `POST /users/login` - Login a user
+- `GET /users/profile` - Fetch authenticated user profile
+- `GET /users/logout` - Logout the current user
+
+### Chat Routes
+- `POST /chats` - Create a chat session
+- `GET /chats/:id` - Load an existing chat
+- `POST /chats/summary/bulk` - Fetch summary data for chats
+
+## Application Flow
+
+1. User signs up or logs in through the React app.
+2. The frontend sends requests to the Express backend.
+3. The backend authenticates users and manages chat sessions.
+4. Relevant legal documents are retrieved from Pinecone.
+5. A large language model generates a grounded response using the retrieved context.
+6. The final answer is returned to the user in the frontend chat UI.
+
+## Notes
+
+This project is currently a local development project and is meant to be extended with production-ready deployment, better legal knowledge sources, improved prompt engineering, and more robust moderation and validation layers.
+
+## Future Improvements
+
+- Add admin dashboard for legal content management
+- Expand document ingestion from more legal sources
+- Improve response validation and citation mechanisms
+- Add richer analytics and user activity tracking
+- Prepare deployment pipeline for production hosting
